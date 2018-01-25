@@ -1,6 +1,6 @@
 import numpy as np  #Used for linear algebra
 import pandas  #Used for data processing, CSV file I/O
-
+from numpy import mean, median #While this is added in the 'import numpy as np', useful to note, we need these to print out lists
 from scipy.stats import ttest_ind
 #A ttest is a stat test to estimate if the diff of two measured groups is reliable
 #Using an independant samples ttest b/c were comparing two groups
@@ -25,6 +25,15 @@ class fileReader():
             self.head = self.dataFrame.head()           #Throws first few lines of doc
         return
 
+    def createHisto(self): #TODO make this function
+        return
+
+    def checkDistribution(self, dataArray, dist, plot):
+        if len(dataArray) >= 2:
+            probplot(dataArray, dist=dist, plot=plot)
+            plot.show()
+            return
+
     def checkPath(self, file):
         if os.path.isfile(file):
             return True
@@ -42,7 +51,6 @@ if __name__ == '__main__':
 
     # newReader.printColumn('ADDRESS')                  #Class func to just pass column name to return whole column
     # newReader.printColumn('SALE PRICE')
-
     salePrice = newReader.dataFrame['SALE PRICE']
     builtYear = newReader.dataFrame['YEAR BUILT']
 
@@ -71,8 +79,8 @@ if __name__ == '__main__':
     # plt.hist(newReader.dataFrame['BLOCK'].astype(np.float))  #astype forces an entire grouping to change types
 
     hood = newReader.dataFrame['NEIGHBORHOOD']
-    print hood
-    print '\n\n\n'
+    #print hood
+    print '\n'
 
     theDale = []
     chelsea = []
@@ -87,21 +95,57 @@ if __name__ == '__main__':
             theDale.append(hood[locale])
             dalePrices.append(refactoredPrices[locale])
 
+    print 'Number of Chelsea properties : '
     print len(chelsea)
     print '\n'
+    print 'Number of Riverdale properties : '
     print len(theDale)
 
     print '\n\n\n'
     chelseaStats = zip(chelsea, chelseaPrices)
     daleStats = zip(theDale, dalePrices)
 
-    print chelseaStats
+    print 'The mean Chelsea prices are : '
+    #print newReader.dataFrame['SALE PRICE'][newReader.dataFrame['NEIGHBORHOOD'] == 'RIVERDALE'].mean() #Only works for a dataFrame object
+    print np.mean(chelseaPrices)
     print '\n'
-    print daleStats
+
+    print 'The median Chelsea prices are : '
+    print np.median(chelseaPrices)
 
     #Prior to ttest we should make sure the variable is normally distributed,
     #Plotting a QQPlot to check normality, hoping that most points are along the center diagonal
-    probplot(chelseaPrices, dist="norm", plot=pylab)
+    #basic line of best fit
+    newReader.checkDistribution(chelseaPrices,"norm",pylab)
+
+    print '\n'
+    comparison = ttest_ind(chelseaPrices, dalePrices, equal_var=False)
+    print 'The TTest compared object returns a statistic value of :'
+    print comparison[0]
+    print '\n'
+
+    print 'The TTest compared object returns a p-value of :'
+    print comparison[1]
+    print '\n'
+
+
+
+
+
+
+    #ttest_ind(trimmedChelsea, trimmedDale, equal_var=False)
+
+    # probplot(chelseaPrices, dist="norm", plot=pylab)
+    # pylab.show()
+    # time.sleep(5)
+    #
+    # probplot(dalePrices, dist="norm", plot=pylab)
+    # pylab.show()
+    # print '\n'
+
+
+
+
 
 
 
