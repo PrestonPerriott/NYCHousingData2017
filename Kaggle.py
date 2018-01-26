@@ -13,6 +13,8 @@ from subprocess import check_output
 import os
 import cv2
 
+
+#TODO README file 
 #Its worth Command clicking through all of the functions you're not familiar with
 #TODO All the Exception Handling
 
@@ -26,6 +28,11 @@ class fileReader():
             self.columns = self.dataFrame.columns       #Grab all the columns from csv
             self.head = self.dataFrame.head()           #Throws first few lines of doc
         return
+
+    def checkFrequency(self, columnName):
+        #TODO Switch statement for index, list of names, list of count, list of numbers of the labels
+        freq = self.dataFrame[columnName].value_counts()
+        return freq
 
     def createHisto(self, numOfPlots, data, labels, loc, title, alpha):
         #If num of plots is greater than two, we should assume data is an array of arrays [ [1,2,3,4], [17, 27, 67, 23] ]
@@ -148,6 +155,10 @@ if __name__ == '__main__':
     dataArray = [chelseaPrices[0:100], dalePrices[0:100]]
     graph = newReader.createHisto(2, dataArray, ['chel','dale'],'upper right', 'BX vs Chelsea Prices', 0.5)
     graph.show()
+
+    #Playing around with categorical data
+
+
 
 
 
