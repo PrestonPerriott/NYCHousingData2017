@@ -14,7 +14,7 @@ import os
 import cv2
 
 
-#TODO README file 
+#TODO README file
 #Its worth Command clicking through all of the functions you're not familiar with
 #TODO All the Exception Handling
 
@@ -30,7 +30,6 @@ class fileReader():
         return
 
     def checkFrequency(self, columnName):
-        #TODO Switch statement for index, list of names, list of count, list of numbers of the labels
         freq = self.dataFrame[columnName].value_counts()
         return freq
 
@@ -55,20 +54,39 @@ class fileReader():
             plot.show()
             return
 
+    def printColumn(self, column):  # Add some functionality that helps user search for correct column
+            colToPrint = self.dataFrame[column]  # Like auto correct name, if column has numerics & which are labels
+            print colToPrint
+
     def checkPath(self, file):
         if os.path.isfile(file):
             return True
         else:
             return False
 
-    def printColumn(self, column):                      #Add some functionality that helps user search for correct column
-        colToPrint = self.dataFrame[column]             #Like auto correct name, if column has numerics & which are labels
-        print colToPrint
+    def switchBorough(self, arg):          # A python type switch statement, this'll come in hand later for grouping hoods
+        switcher = {
+            1: 'MANHATTAN',
+            2: 'THE BRONX',
+            3: 'BROOKLYN',
+            4: 'QUEENS',
+        }
+        #print switcher.get(arg, "Invalid Key")  #returns the string value
+        return switcher.get(arg, "Invalid Key")
+
 
 if __name__ == '__main__':
 
     newReader = fileReader('nyc-rolling-sales.csv')     #specifiy the file and path if needed
     print '\n\n\n'
+    obj = newReader.checkFrequency('YEAR BUILT')  #TODO Clean this frequency nonsense up 
+    print obj                          #frequency of everything in column
+    print '\n'
+    print obj.index                    #List of names/years
+    print '\n'
+    print obj.values                   #A list of the counts/frequencies of each year w/o the year
+    print '\n'
+    print list(range(len(obj.index)))  #prints a list of numbers as long as the list of names : 0....nth object
 
     # newReader.printColumn('ADDRESS')                  #Class func to just pass column name to return whole column
     # newReader.printColumn('SALE PRICE')
@@ -145,11 +163,11 @@ if __name__ == '__main__':
     print '\n'
     comparison = ttest_ind(chelseaPrices, dalePrices, equal_var=False)
     print 'The TTest compared object returns a statistic value of :'
-    print comparison[0]
+    print comparison[0]    # Actual value of the ttest
     print '\n'
 
     print 'The TTest compared object returns a p-value of :'
-    print comparison[1]
+    print comparison[1]    # probability that the dif between the groups is due to chance
     print '\n'
 
     dataArray = [chelseaPrices[0:100], dalePrices[0:100]]
