@@ -13,6 +13,8 @@ from subprocess import check_output
 import os
 import cv2
 
+#Its worth Command clicking through all of the functions you're not familiar with
+#TODO All the Exception Handling
 
 class fileReader():
     def __init__(self, file):
@@ -35,12 +37,12 @@ class fileReader():
                 i += 1
             plt.legend(loc=loc)
             plt.title(title)
-        else:
+        else:                                           #If we dont have more than two arrays to plot, we should expect to plot one
             plt.hist(data, alpha=alpha, label=labels, title=title)
             plt.legend(loc=loc)
         return plt
 
-    def checkDistribution(self, dataArray, dist, plot):
+    def checkDistribution(self, dataArray, dist, plot): #Line of best fit function
         if len(dataArray) >= 2:
             probplot(dataArray, dist=dist, plot=plot)
             plot.show()
@@ -129,6 +131,9 @@ if __name__ == '__main__':
     #Plotting a QQPlot to check normality, hoping that most points are along the center diagonal
     #basic line of best fit
     newReader.checkDistribution(chelseaPrices,"norm",pylab)
+    # probplot(chelseaPrices, dist="norm", plot=pylab)
+    # pylab.show()
+
 
     print '\n'
     comparison = ttest_ind(chelseaPrices, dalePrices, equal_var=False)
@@ -144,15 +149,6 @@ if __name__ == '__main__':
     graph = newReader.createHisto(2, dataArray, ['chel','dale'],'upper right', 'BX vs Chelsea Prices', 0.5)
     graph.show()
 
-
-
-    # probplot(chelseaPrices, dist="norm", plot=pylab)
-    # pylab.show()
-    # time.sleep(5)
-    #
-    # probplot(dalePrices, dist="norm", plot=pylab)
-    # pylab.show()
-    # print '\n'
 
 
 
