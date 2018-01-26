@@ -25,8 +25,20 @@ class fileReader():
             self.head = self.dataFrame.head()           #Throws first few lines of doc
         return
 
-    def createHisto(self): #TODO make this function
-        return
+    def createHisto(self, numOfPlots, data, labels, loc, title, alpha):
+        #If num of plots is greater than two, we should assume data is an array of arrays [ [1,2,3,4], [17, 27, 67, 23] ]
+        if numOfPlots >= 2:
+            x = len(data)
+            i = 0
+            while i < x:
+                plt.hist(data[i], alpha=alpha, label=labels[i])
+                i += 1
+            plt.legend(loc=loc)
+            plt.title(title)
+        else:
+            plt.hist(data, alpha=alpha, label=labels, title=title)
+            plt.legend(loc=loc)
+        return plt
 
     def checkDistribution(self, dataArray, dist, plot):
         if len(dataArray) >= 2:
@@ -128,12 +140,11 @@ if __name__ == '__main__':
     print comparison[1]
     print '\n'
 
+    dataArray = [chelseaPrices[0:100], dalePrices[0:100]]
+    graph = newReader.createHisto(2, dataArray, ['chel','dale'],'upper right', 'BX vs Chelsea Prices', 0.5)
+    graph.show()
 
 
-
-
-
-    #ttest_ind(trimmedChelsea, trimmedDale, equal_var=False)
 
     # probplot(chelseaPrices, dist="norm", plot=pylab)
     # pylab.show()
