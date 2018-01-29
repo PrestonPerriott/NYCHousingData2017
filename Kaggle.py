@@ -17,6 +17,8 @@ import cv2
 #TODO README file
 #Its worth Command clicking through all of the functions you're not familiar with
 #TODO All the Exception Handling
+#TODO Some naming conventions
+
 
 class fileReader():
     def __init__(self, file):
@@ -29,9 +31,21 @@ class fileReader():
             self.head = self.dataFrame.head()           #Throws first few lines of doc
         return
 
-    def checkFrequency(self, columnName):
-        freq = self.dataFrame[columnName].value_counts()
-        return freq
+    def checkFrequency(self, columnName):               #should return a dict of the three useful vals
+        freq = self.dataFrame[columnName].value_counts()#How often an object in columnName appears, along with the item in that column
+        freqIndex = freq.index                          #list of just the objects in the column
+        freqValues = freq.values                        #List of each count for each column item
+        freqNth = list(range(len(freqIndex)))           #0......nth of how many objects we have in the list
+        freqDict = {
+             'frequency' : freq,
+             'index'     : freqIndex,
+             'values'    : freqValues,
+             'zero-based': freqNth
+        }                                               #TODO and ability to limit the size of the column
+        return freqDict
+
+    def createBar(self): #TODO finish func
+        return
 
     def createHisto(self, numOfPlots, data, labels, loc, title, alpha):
         #If num of plots is greater than two, we should assume data is an array of arrays [ [1,2,3,4], [17, 27, 67, 23] ]
@@ -79,14 +93,17 @@ if __name__ == '__main__':
 
     newReader = fileReader('nyc-rolling-sales.csv')     #specifiy the file and path if needed
     print '\n\n\n'
-    obj = newReader.checkFrequency('YEAR BUILT')  #TODO Clean this frequency nonsense up 
-    print obj                          #frequency of everything in column
-    print '\n'
-    print obj.index                    #List of names/years
-    print '\n'
-    print obj.values                   #A list of the counts/frequencies of each year w/o the year
-    print '\n'
-    print list(range(len(obj.index)))  #prints a list of numbers as long as the list of names : 0....nth object
+
+    zipCodeFrequencyDict = newReader.checkFrequency('ZIP CODE')
+    print zipCodeFrequencyDict['frequency']
+    print zipCodeFrequencyDict['zero-based']
+
+    #Using our function to create a bar graph more easily
+    plt.bar(zipCodeFrequencyDict['zero-based'], zipCodeFrequencyDict['values']) #Plot the bars
+    plt.xticks(zipCodeFrequencyDict['zero-based'], zipCodeFrequencyDict['index']) #add the labels
+    plt.title('Zip Code Pref')
+    plt.show()
+
 
     # newReader.printColumn('ADDRESS')                  #Class func to just pass column name to return whole column
     # newReader.printColumn('SALE PRICE')
