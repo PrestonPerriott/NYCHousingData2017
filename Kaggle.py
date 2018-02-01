@@ -102,12 +102,12 @@ if __name__ == '__main__':
     print zipCodeFrequencyDict['zero-based']
 
     plt.bar(zipCodeFrequencyDict['zero-based'], zipCodeFrequencyDict['values']) #Plot the bars
-    plt.xticks(zipCodeFrequencyDict['zero-based'], zipCodeFrequencyDict['index']) #add the labels
+    plt.xticks(zipCodeFrequencyDict['zero-based'], zipCodeFrequencyDict['index/labels']) #add the labels
     plt.title('Zip Code Pref')
     #plt.show()
 
     # Using our function to create a bar graph more easily
-    barGraph = newReader.createBar(zipCodeFrequencyDict)
+    barGraph = newReader.createBar(zipCodeFrequencyDict, 'Zip Code Pref/Freq')
     barGraph.show()
 
 
