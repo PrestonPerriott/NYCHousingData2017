@@ -31,8 +31,9 @@ class fileReader():
             self.head = self.dataFrame.head()           #Throws first few lines of doc
         return
 
-    def checkFrequency(self, columnName):               #should return a dict of the three useful vals
+    def checkFrequency(self, columnName, withRange=25):               #should return a dict of the three useful vals
         freq = self.dataFrame[columnName].value_counts()#How often an object in columnName appears, along with the item in that column
+        freq = freq[0:withRange]                        #withRange being an optional param if the dataset is too large
         freqIndex = freq.index                          #list of just the objects in the column
         freqValues = freq.values                        #List of each count for each column item
         freqNth = list(range(len(freqIndex)))           #0......nth of how many objects we have in the list
@@ -50,7 +51,7 @@ class fileReader():
         plt.title(title)
         return plt
 
-    def createHisto(self, numOfPlots, data, labels, loc, title, alpha):
+    def createHisto(self, data, labels, loc, title, alpha, numOfPlots=1):
         #If num of plots is greater than two, we should assume data is an array of arrays [ [1,2,3,4], [17, 27, 67, 23] ]
         if numOfPlots >= 2:
             x = len(data)
@@ -60,9 +61,7 @@ class fileReader():
                 i += 1
             plt.legend(loc=loc)
             plt.title(title)
-        else:                                           #If we dont have more than two arrays to plot, we should expect to plot one
-            plt.hist(data, alpha=alpha, label=labels, title=title)
-            plt.legend(loc=loc)
+        #The else for this function should include just a single dataset #TODO
         return plt
 
     def checkDistribution(self, dataArray, dist, plot): #Line of best fit function
@@ -101,16 +100,9 @@ if __name__ == '__main__':
     print zipCodeFrequencyDict['frequency']
     print zipCodeFrequencyDict['zero-based']
 
-    plt.bar(zipCodeFrequencyDict['zero-based'], zipCodeFrequencyDict['values']) #Plot the bars
-    plt.xticks(zipCodeFrequencyDict['zero-based'], zipCodeFrequencyDict['index/labels']) #add the labels
-    plt.title('Zip Code Pref')
-    #plt.show()
-
     # Using our function to create a bar graph more easily
     barGraph = newReader.createBar(zipCodeFrequencyDict, 'Zip Code Pref/Freq')
     barGraph.show()
-
-
 
     # newReader.printColumn('ADDRESS')                  #Class func to just pass column name to return whole column
     # newReader.printColumn('SALE PRICE')
@@ -127,9 +119,13 @@ if __name__ == '__main__':
     print '\n\n'
     print newReader.columns                             #Pands func for viewing all of the columns in csv
 
+    # another bar graph of the sales price freq
+    pricesFreqDict = newReader.checkFrequency('SALE PRICE')
+    newBAr = newReader.createBar(pricesFreqDict, 'SALE PRICE FREQ')
+    newBAr.show()
+
     plt.title("2016 New York Property Construction Dates")
     plt.hist(builtYear[0:500], bins=20, edgecolor='black')   #Creates the histogram #[0:200] dictates i want the 0th to the 200th items used
-
     # A histogram is a type of chart where the x-axis (along the bottom) is the range of numeric values of the variable,
     # chopped up into a series of bins. For example, if the range of a value is from 0 to 12,
     # it might be split into four bins, the first one being 1 through 3, the second being 4 through 6,
@@ -139,6 +135,11 @@ if __name__ == '__main__':
     plt.ylabel('Volume of Properties')
     plt.xlabel('Year Built')
     plt.show()
+
+    # builtYearHisto = newReader.createHisto(builtYear[0:500], 0.5, ['Volume of Properties', 'Year Built'], 'upper right', 'some Title')
+    # #builtYearHisto = newReader.createHisto(builtYear[0:500])
+    # builtYearHisto.show()
+
     # plt.hist(newReader.dataFrame['BLOCK'].astype(np.float))  #astype forces an entire grouping to change types
 
     hood = newReader.dataFrame['NEIGHBORHOOD']
@@ -195,7 +196,7 @@ if __name__ == '__main__':
     print '\n'
 
     dataArray = [chelseaPrices[0:100], dalePrices[0:100]]
-    graph = newReader.createHisto(2, dataArray, ['chel','dale'],'upper right', 'BX vs Chelsea Prices', 0.5)
+    graph = newReader.createHisto(dataArray, ['chel','dale'],'upper right', 'BX vs Chelsea Prices', 0.5, 2)
     graph.show()
 
     #Playing around with categorical data
